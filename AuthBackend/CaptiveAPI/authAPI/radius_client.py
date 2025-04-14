@@ -2,6 +2,7 @@ from pyrad.client import Client
 from pyrad.dictionary import Dictionary
 from pyrad.packet import AccessRequest, AccessAccept
 import os, logging
+import traceback
 
 def authenticate_with_radius(username, password):
     try:
@@ -28,4 +29,5 @@ def authenticate_with_radius(username, password):
 
     except Exception as e:
         print(f"RADIUS error: {e}")
+        traceback.print_exc()
         return False
