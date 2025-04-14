@@ -5,9 +5,10 @@ import os, logging
 
 def authenticate_with_radius(username, password):
     try:
+        print(f"intentando autenticar con usuario: {username}, password: {password}")
         dict_path = os.path.join(os.path.dirname(__file__), "dictionary")
         client = Client(
-            server="10.18.245.10",        # IP de tu servidor RADIUS
+            server="127.0.0.1",        # IP de tu servidor RADIUS
             secret=b"test1234",           # Clave compartida (coincide con FreeRADIUS)
             dict=Dictionary(dict_path)
         )
@@ -16,7 +17,15 @@ def authenticate_with_radius(username, password):
         req["User-Password"] = req.PwCrypt(password)
         reply = client.SendPacket(req)
 
-        return reply.code == AccessAccept
+        print(f"codigo de respuesta RADIUS: {reply.code}")
+
+        if reply.code == AccessAccept:
+            print("Autenticación exitosa")
+            return True
+        else:
+            print("Autenticación fallida")
+            return False
+
     except Exception as e:
-        logging.error(f"RADIUS error: {e}")
+        print(f"RADIUS error: {e}")
         return False

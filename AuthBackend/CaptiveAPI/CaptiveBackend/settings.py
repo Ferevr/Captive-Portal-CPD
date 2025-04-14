@@ -126,5 +126,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost",             # para desarrollo local
-    "http://10.18.76.79"           # IP del Mikrotik o Apache
+    "http://10.18.76.79",           # IP del Mikrotik o Apache
+    "http://0.0.0.0" 
 ]

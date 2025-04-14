@@ -21,3 +21,5 @@ def radius_login_api(request):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
+
+print(authenticate_with_radius("ferevr", "test1234"))
