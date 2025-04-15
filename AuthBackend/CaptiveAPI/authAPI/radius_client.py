@@ -1,26 +1,22 @@
-from pyrad.client import Client
-from pyrad.dictionary import Dictionary
-from pyrad.packet import AccessRequest, AccessAccept
-import os, logging
-import traceback
+import subprocess
+import logging
 
 def authenticate_with_radius(username, password):
     try:
-        print(f"intentando autenticar con usuario: {username}, password: {password}")
-        dict_path = os.path.join(os.path.dirname(__file__), "dictionary")
-        client = Client(
-            server="127.0.0.1",        # IP de tu servidor RADIUS
-            secret=b"test1234",           # Clave compartida (coincide con FreeRADIUS)
-            dict=Dictionary(dict_path)
-        )
-        client.AuthPort = 1812
-        req = client.CreateAuthPacket(code=AccessRequest, User_Name=username)
-        req["User-Password"] = req.PwCrypt(password)
-        reply = client.SendPacket(req)
+        print(f"Intentando autenticar con usuario: {username}, password: {password}")
 
-        print(f"codigo de respuesta RADIUS: {reply.code}")
+        # Construye el comando para radclient
+        command = f'echo "User-Name={username},User-Password={password}" | radclient -x 127.0.0.1 auth test1234'
 
-        if reply.code == AccessAccept:
+        # Ejecuta el comando
+        result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Imprime la salida para debug
+        print("STDOUT:\n", result.stdout)
+        print("STDERR:\n", result.stderr)
+
+        # Verifica si la respuesta contiene "Access-Accept"
+        if "Access-Accept" in result.stdout:
             print("Autenticación exitosa")
             return True
         else:
@@ -28,6 +24,5 @@ def authenticate_with_radius(username, password):
             return False
 
     except Exception as e:
-        print(f"RADIUS error: {e}")
-        traceback.print_exc()
+        logging.error(f"Error al autenticar con RADIUS: {e}")
         return False
