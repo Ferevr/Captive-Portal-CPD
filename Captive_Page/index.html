@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chihuahua Online</title>
+</head>
+
+<body>
+    <h2>Iniciar sesion</h2>
+    <form action="" id="login">
+        <input type="mail" id="username" placeholder="Correo electronico" required><br>
+        <button type="submit">Acceder a internet!</button>
+    </form>
+
+    <div id="msg"></div>
+
+    <script>
+        document.getElementById('login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('http://127.0.0.1:8000/api/login/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('msg').innerText = "Acceso concedido. Redirigiendo...";
+                // Aquí puedes redirigir o liberar el acceso con un fetch a Mikrotik
+
+            } else {
+                document.getElementById('msg').innerText = "Acceso denegado";
+            }
+        });
+    </script>
+</body>
+</html>
